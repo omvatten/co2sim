@@ -37,7 +37,7 @@ with col4:
 st.subheader('Simulation')
 col1, col2, col3 = st.columns(3)
 with col1:
-    sim_time = float(st.text_input('Simulation time (d)', value=1))
+    sim_time = float(st.text_input('Simulation time (d)', value=10))
 
 dt = 0.1
 tsteps = int(sim_time/dt)+1
