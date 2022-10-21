@@ -213,7 +213,5 @@ with third:
                 co3_c = base_chart.encode(y=alt.Y('CO3', axis=alt.Axis(title='Carbonate (mM)')))
                 fig = (ph_c | alk_c ) & (ct_c | co2_c ) & (hco3_c | co3_c)
                 st.altair_chart(fig)
-                
-                st.write(yvals)
 
             
