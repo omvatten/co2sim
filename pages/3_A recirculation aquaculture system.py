@@ -6,6 +6,7 @@ from PIL import Image
 import time
 import help_functions as hf
 
-st.subheader('Flow through one tank')
+st.subheader('A recirculation aquaculture system')
+st.markdown('Work in progress...')
 image2 = Image.open('data/case2.png')
 st.image(image2)
