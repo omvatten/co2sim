@@ -61,6 +61,7 @@ def C_closed(ct, alk, temp, tds=0, cond=0, IS=0):
         r1 = alk*ct*(g1**4)*Ka1(temp) - 2*(g1**2)*(Ka1(temp)**2)*ct
         r0 = (g1**2)*(Ka1(temp)**2)*(ct**2)
         hco3_roots = list(np.roots([r3, r2, r1, r0]))
+        hco3 = alk; co2 = max(ct-alk, 10**-14)
         for r in hco3_roots:
             if r > 0 and ct-r > 0:
                 hco3 = r
@@ -74,6 +75,7 @@ def C_closed(ct, alk, temp, tds=0, cond=0, IS=0):
         r1 = 2*ct*Kw(temp)*(g2**2)-2*(g1**2)*g2*Ka2(temp)*(ct**2)+ct*alk*(g1**2)*g2*Ka2(temp)
         r0 = -Kw(temp)*(g2**2)*(ct**2)
         hco3_roots = list(np.roots([r3, r2, r1, r0]))
+        hco3 = max(2*ct-alk, 10**-14); co3 = ct-hco3
         for r in hco3_roots:
             if r > 0 and ct-r > 0:
                 hco3 = r
