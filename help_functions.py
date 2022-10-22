@@ -55,7 +55,20 @@ def C_closed(ct, alk, temp, tds=0, cond=0, IS=0):
         co3 = 0
         hplus = (Kw(temp)/(g1**2))**0.5
         oh = hplus
-    elif alk > 0:
+    elif alk > 0 and alk <= ct:
+        r3 = (g1**4)*Ka1(temp)
+        r2 = (g1**2)*(Ka1(temp)**2) - alk*(g1**4)*Ka1(temp) - Kw(temp)*(g1**4) - ct*(g1**4)*Ka1(temp)
+        r1 = alk*ct*(g1**4)*Ka1(temp) - 2*(g1**2)*(Ka1(temp)**2)*ct
+        r0 = (g1**2)*(Ka1(temp)**2)*(ct**2)
+        hco3_roots = list(np.roots([r3, r2, r1, r0]))
+        for r in hco3_roots:
+            if r > 0 and ct-r > 0:
+                hco3 = r
+                co2 = ct-hco3
+        hplus = Ka1(temp)*co2/((g1**2)*hco3)
+        oh = Kw(temp)/((g1**2)*hplus)
+        co3 = Ka2(temp)*g2*hco3/hplus
+    elif alk > 0 and alk > ct:
         r3 = -(g1**2)*g2*Ka2(temp)
         r2 = 3*ct*(g1**2)*g2*Ka2(temp)-Kw(temp)*(g2**2)-alk*(g1**2)*g2*Ka2(temp)+(Ka2(temp)**2)*(g1**2)
         r1 = 2*ct*Kw(temp)*(g2**2)-2*(g1**2)*g2*Ka2(temp)*(ct**2)+ct*alk*(g1**2)*g2*Ka2(temp)
