@@ -69,17 +69,17 @@ if st.button('Run simulation'):
             diff = diff_new
 
     #Print results
-    st.markdown('Steady-state concentrations:')
+    st.markdown('Estimated steady-state concentrations:')
     IS = hf.get_IS(TDS=tds_in, cond=cond_in)
     g1 = hf.Davies_eq(1, IS, temp)
     st.markdown('pH = '+str(round(-np.log10(g1*Ctank[4]),2)))
 
     if 1000*alk_in < 0.01 and 1000*alk_in > -0.01:
         p_alk1 = f'{1000*alk_in:.2e}'
-        p_alk2 = f'{1000*100.0869*alk_in:.2e}'
+        p_alk2 = f'{1000*100.0869*alk_in/2:.2e}'
     else:
         p_alk1 = str(round(1000*alk_in, 2))
-        p_alk2 = str(round(1000*100.0869*alk_in, 2))
+        p_alk2 = str(round(1000*100.0869*alk_in/2, 2))
     st.markdown('Alk = '+p_alk1+' mM = '+p_alk2+ ' mg/L as CaCO\u2083')
 
     if IS < 10**-20:

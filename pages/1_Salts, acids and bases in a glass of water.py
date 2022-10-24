@@ -98,10 +98,10 @@ with third:
 
             if 1000*alk < 0.01 and 1000*alk > -0.01:
                 p_alk1 = f'{1000*alk:.2e}'
-                p_alk2 = f'{1000*100.0869*alk:.2e}'
+                p_alk2 = f'{1000*100.0869*alk/2:.2e}'
             else:
                 p_alk1 = str(round(1000*alk, 2))
-                p_alk2 = str(round(1000*100.0869*alk, 2))
+                p_alk2 = str(round(1000*100.0869*alk/2, 2))
             st.markdown('Alk = '+p_alk1+' mM = '+p_alk2+ ' mg/L as CaCO\u2083')
     
             if IS < 10**-20:
