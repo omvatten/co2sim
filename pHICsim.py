@@ -1,7 +1,7 @@
 import streamlit as st
 from PIL import Image
 
-st.title('co2sim')
+st.title('pHICsim')
 st.subheader('Simulation of pH, alkalinity, and inorganic carbon in water')
 st.markdown('The carbonate system is a series of chemical equilibria between inorganic carbon compounds '
             ' and controls the pH of most natural waters. '
