@@ -20,7 +20,7 @@ with first:
 
 with second:
     st.subheader('Input')
-    enhet = st.radio('Choose unit for concentrations', options=['mg/L', 'mmol/L'], horizontal=True)
+    enhet = st.radio('Choose unit for concentrations', options=['mg/L', 'mmol/L'], horizontal=True, index=1)
 
     col1, col2, col3 = st.columns(3)
     with col1:
@@ -141,84 +141,101 @@ with third:
             st.markdown('Examine the effect of one parameter. Choose parameter below and specify the range of values to examine. '
                         'The rest of the parameters will be kept as specified above. '
                         '(The effect of CO<sub>2</sub> partial pressure would only make sense to examine for an open system.)', unsafe_allow_html=True)
-            par = st.radio('Choose parameter', options=['NaCl', 'HCl', 'NaOH', 'NaHCO3', 'Na2CO3', 'Temperature', 'CO2 partial press.'])
-            min_val = float(st.text_input('Min. value', value=0))
-            max_val = float(st.text_input('Max. value', value=10))
-            yvals = [[par, 'pH', 'alk', 'ct', 'CO2', 'HCO3', 'CO3']]
-            if par == 'NaCl':
-                xvals = np.linspace(min_val/1000, max_val/1000, num=20)
-                for x in xvals:
-                    if open_closed == 'Closed':
-                        conc, ct, alk, IS = closed_calc(x, hcl, naoh, hco3, co3, temp)
-                    elif open_closed == 'Open':
-                        conc, ct, alk, IS = open_calc(x, hcl, naoh, pco2, hco3, co3, temp)
-                    g1 = hf.Davies_eq(1, IS, temp)
-                    pH = -np.log10(g1*conc[4])
-                    yvals.append([1000*x, pH, 1000*alk, 1000*ct, 1000*conc[0], 1000*conc[1], 1000*conc[2]])
-            elif par == 'HCl':
-                xvals = np.linspace(min_val/1000, max_val/1000, num=20)
-                for x in xvals:
-                    if open_closed == 'Closed':
-                        conc, ct, alk, IS = closed_calc(nacl, x, naoh, hco3, co3, temp)
-                    elif open_closed == 'Open':
-                        conc, ct, alk, IS = open_calc(nacl, x, naoh, pco2, hco3, co3, temp)
-                    g1 = hf.Davies_eq(1, IS, temp)
-                    pH = -np.log10(g1*conc[4])
-                    yvals.append([1000*x, pH, 1000*alk, 1000*ct, 1000*conc[0], 1000*conc[1], 1000*conc[2]])
-            elif par == 'NaOH':
-                xvals = np.linspace(min_val/1000, max_val/1000, num=20)
-                for x in xvals:
-                    if open_closed == 'Closed':
-                        conc, ct, alk, IS = closed_calc(nacl, hcl, x, hco3, co3, temp)
-                    elif open_closed == 'Open':
-                        conc, ct, alk, IS = open_calc(nacl, hcl, x, pco2, hco3, co3, temp)
-                    g1 = hf.Davies_eq(1, IS, temp)
-                    pH = -np.log10(g1*conc[4])
-                    yvals.append([1000*x, pH, 1000*alk, 1000*ct, 1000*conc[0], 1000*conc[1], 1000*conc[2]])
-            elif par == 'NaHCO3':
-                xvals = np.linspace(min_val/1000, max_val/1000, num=20)
-                for x in xvals:
-                    if open_closed == 'Closed':
-                        conc, ct, alk, IS = closed_calc(nacl, hcl, naoh, x, co3, temp)
-                    elif open_closed == 'Open':
-                        conc, ct, alk, IS = open_calc(nacl, hcl, naoh, pco2, x, co3, temp)
-                    g1 = hf.Davies_eq(1, IS, temp)
-                    pH = -np.log10(g1*conc[4])
-                    yvals.append([1000*x, pH, 1000*alk, 1000*ct, 1000*conc[0], 1000*conc[1], 1000*conc[2]])
-            elif par == 'Na2CO3':
-                xvals = np.linspace(min_val/1000, max_val/1000, num=20)
-                for x in xvals:
-                    if open_closed == 'Closed':
-                        conc, ct, alk, IS = closed_calc(nacl, hcl, naoh, hco3, x, temp)
-                    elif open_closed == 'Open':
-                        conc, ct, alk, IS = open_calc(nacl, hcl, naoh, pco2, hco3, x, temp)
-                    g1 = hf.Davies_eq(1, IS, temp)
-                    pH = -np.log10(g1*conc[4])
-                    yvals.append([1000*x, pH, 1000*alk, 1000*ct, 1000*conc[0], 1000*conc[1], 1000*conc[2]])
-            elif par == 'Temperature':
-                xvals = np.linspace(min_val, max_val, num=20)
-                for x in xvals:
-                    if open_closed == 'Closed':
-                        conc, ct, alk, IS = closed_calc(nacl, hcl, naoh, hco3, co3, x)
-                    elif open_closed == 'Open':
-                        conc, ct, alk, IS = open_calc(nacl, hcl, naoh, pco2, hco3, co3, x)
-                    g1 = hf.Davies_eq(1, IS, temp)
-                    pH = -np.log10(g1*conc[4])
-                    yvals.append([x, pH, 1000*alk, 1000*ct, 1000*conc[0], 1000*conc[1], 1000*conc[2]])
-            elif par == 'CO2 partial press.':
-                xvals = np.linspace(min_val, max_val, num=20)
-                for x in xvals:
-                    if open_closed == 'Closed':
-                        conc, ct, alk, IS = closed_calc(nacl, hcl, naoh, hco3, co3, temp)
-                    elif open_closed == 'Open':
-                        conc, ct, alk, IS = open_calc(nacl, hcl, naoh, x, hco3, co3, temp)
-                    g1 = hf.Davies_eq(1, IS, temp)
-                    pH = -np.log10(g1*conc[4])
-                    yvals.append([x, pH, 1000*alk, 1000*ct, 1000*conc[0], 1000*conc[1], 1000*conc[2]])
+            par = st.radio('Choose parameter', options=['NaCl', 'HCl', 'NaOH', 'NaHCO3', 'Na2CO3', 'Temperature', 'CO2_partial_press'])
+            min_val = 0; max_val = 10
+            if par == 'CO2_partial_press':
+                min_val = float(st.text_input('Min. value (atm)', value=0))
+                max_val = float(st.text_input('Max. value (atm)', value=1))
+            else:
+                min_val = float(st.text_input('Min. value ('+enhet+')', value=0))
+                max_val = float(st.text_input('Max. value ('+enhet+')', value=10))
 
-            #['pH', 'alk', 'ct', 'CO2', 'HCO3', 'CO3']
-            yvals = pd.DataFrame(yvals[1:], columns=yvals[0])
             if st.button('Show relationships'):
+                yvals = [[par, 'pH', 'alk', 'ct', 'CO2', 'HCO3', 'CO3']]
+                if par == 'NaCl':
+                    xvals = np.linspace(min_val/1000, max_val/1000, num=20)
+                    if enhet == 'mg/L':
+                        xvals = xvals/58.44
+                    for x in xvals:
+                        if open_closed == 'Closed':
+                            conc, ct, alk, IS = closed_calc(x, hcl, naoh, hco3, co3, temp)
+                        elif open_closed == 'Open':
+                            conc, ct, alk, IS = open_calc(x, hcl, naoh, pco2, hco3, co3, temp)
+                        g1 = hf.Davies_eq(1, IS, temp)
+                        pH = -np.log10(g1*conc[4])
+                        yvals.append([1000*x, pH, 1000*alk, 1000*ct, 1000*conc[0], 1000*conc[1], 1000*conc[2]])
+                elif par == 'HCl':
+                    xvals = np.linspace(min_val/1000, max_val/1000, num=20)
+                    if enhet == 'mg/L':
+                        xvals = xvals/36.458
+                    for x in xvals:
+                        if open_closed == 'Closed':
+                            conc, ct, alk, IS = closed_calc(nacl, x, naoh, hco3, co3, temp)
+                        elif open_closed == 'Open':
+                            conc, ct, alk, IS = open_calc(nacl, x, naoh, pco2, hco3, co3, temp)
+                        g1 = hf.Davies_eq(1, IS, temp)
+                        pH = -np.log10(g1*conc[4])
+                        yvals.append([1000*x, pH, 1000*alk, 1000*ct, 1000*conc[0], 1000*conc[1], 1000*conc[2]])
+                elif par == 'NaOH':
+                    xvals = np.linspace(min_val/1000, max_val/1000, num=20)
+                    if enhet == 'mg/L':
+                        xvals = xvals/39.997
+                    for x in xvals:
+                        if open_closed == 'Closed':
+                            conc, ct, alk, IS = closed_calc(nacl, hcl, x, hco3, co3, temp)
+                        elif open_closed == 'Open':
+                            conc, ct, alk, IS = open_calc(nacl, hcl, x, pco2, hco3, co3, temp)
+                        g1 = hf.Davies_eq(1, IS, temp)
+                        pH = -np.log10(g1*conc[4])
+                        yvals.append([1000*x, pH, 1000*alk, 1000*ct, 1000*conc[0], 1000*conc[1], 1000*conc[2]])
+                elif par == 'NaHCO3':
+                    xvals = np.linspace(min_val/1000, max_val/1000, num=20)
+                    if enhet == 'mg/L':
+                        xvals = xvals/84.007
+                    for x in xvals:
+                        if open_closed == 'Closed':
+                            conc, ct, alk, IS = closed_calc(nacl, hcl, naoh, x, co3, temp)
+                        elif open_closed == 'Open':
+                            conc, ct, alk, IS = open_calc(nacl, hcl, naoh, pco2, x, co3, temp)
+                        g1 = hf.Davies_eq(1, IS, temp)
+                        pH = -np.log10(g1*conc[4])
+                        yvals.append([1000*x, pH, 1000*alk, 1000*ct, 1000*conc[0], 1000*conc[1], 1000*conc[2]])
+                elif par == 'Na2CO3':
+                    xvals = np.linspace(min_val/1000, max_val/1000, num=20)
+                    if enhet == 'mg/L':
+                        xvals = xvals/105.9888
+                    for x in xvals:
+                        if open_closed == 'Closed':
+                            conc, ct, alk, IS = closed_calc(nacl, hcl, naoh, hco3, x, temp)
+                        elif open_closed == 'Open':
+                            conc, ct, alk, IS = open_calc(nacl, hcl, naoh, pco2, hco3, x, temp)
+                        g1 = hf.Davies_eq(1, IS, temp)
+                        pH = -np.log10(g1*conc[4])
+                        yvals.append([1000*x, pH, 1000*alk, 1000*ct, 1000*conc[0], 1000*conc[1], 1000*conc[2]])
+                elif par == 'Temperature':
+                    xvals = np.linspace(min_val, max_val, num=20)
+                    for x in xvals:
+                        if open_closed == 'Closed':
+                            conc, ct, alk, IS = closed_calc(nacl, hcl, naoh, hco3, co3, x)
+                        elif open_closed == 'Open':
+                            conc, ct, alk, IS = open_calc(nacl, hcl, naoh, pco2, hco3, co3, x)
+                        g1 = hf.Davies_eq(1, IS, temp)
+                        pH = -np.log10(g1*conc[4])
+                        yvals.append([x, pH, 1000*alk, 1000*ct, 1000*conc[0], 1000*conc[1], 1000*conc[2]])
+                elif par == 'CO2_partial_press':
+                    xvals = np.linspace(min_val, max_val, num=20)
+                    for x in xvals:
+                        if open_closed == 'Closed':
+                            conc, ct, alk, IS = closed_calc(nacl, hcl, naoh, hco3, co3, temp)
+                        elif open_closed == 'Open':
+                            conc, ct, alk, IS = open_calc(nacl, hcl, naoh, x, hco3, co3, temp)
+                        g1 = hf.Davies_eq(1, IS, temp)
+                        pH = -np.log10(g1*conc[4])
+                        yvals.append([x, pH, 1000*alk, 1000*ct, 1000*conc[0], 1000*conc[1], 1000*conc[2]])
+    
+                #['pH', 'alk', 'ct', 'CO2', 'HCO3', 'CO3']
+                yvals = pd.DataFrame(yvals[1:], columns=yvals[0])
+
                 base_chart = alt.Chart(yvals).mark_line().encode(x=alt.X(par, axis=alt.Axis(title=par))).properties(width=150, height=100)
                 ph_c = base_chart.encode(y=alt.Y('pH', axis=alt.Axis(title='pH')))
                 alk_c = base_chart.encode(y=alt.Y('alk', axis=alt.Axis(title='Alk (mM)')))
